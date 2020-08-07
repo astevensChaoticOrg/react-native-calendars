@@ -47,12 +47,25 @@ class Day extends Component {
     if (marking.dots && Array.isArray(marking.dots) && marking.dots.length > 0) {
       // Filter out dots so that we we process only those items which have key and color property
       const validDots = marking.dots.filter(d => (d && d.color));
-      return validDots.map((dot, index) => {
-        return (
+      var index = 0;
+      var returnDots = [];
+      var returnGrid = [];
+      var dot;
+      for (dot of validDots) {
+        index++;
+        if ((index % 5) == 0) {
+          returnGrid.push(<View key={`${dot.key}_view_${index}`} style={{flexDirection:'row'}}>{returnDots}</View>); 
+          returnDots = [];
+        } 
+        returnDots.push(
           <View key={dot.key ? dot.key : index} style={[baseDotStyle,
-            {backgroundColor: marking.selected && dot.selectedDotColor ? dot.selectedDotColor : dot.color}]}/>
+            {backgroundColor: marking.selected && dot.selectedDotColor ? dot.selectedDotColor : dot.color}, {justifyContent: "center"}]}>
+          </View>
         );
-      });
+      }
+          //<Text adjustFontSizeToFix={true} style={{textAlign: 'center', textAlignVertical: 'center', fontSize: 9}} >a</Text>
+      returnGrid.push(<View key={`${dot.key}_view_${index + 1}`} style={{flexDirection:'row'}}>{returnDots}</View>); 
+      return(returnGrid);
     }
     return;
   }
@@ -88,7 +101,7 @@ class Day extends Component {
         accessibilityLabel={this.props.accessibilityLabel}
       >
         <Text allowFontScaling={false} style={textStyle}>{String(this.props.children)}</Text>
-        <View style={{flexDirection: 'row'}}>{dot}</View>
+        <View style={{flexDirection: 'column'}}>{dot}</View>
       </TouchableOpacity>
     );
   }
